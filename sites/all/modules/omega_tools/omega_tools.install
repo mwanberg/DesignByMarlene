@@ -1,0 +1,13 @@
+<?php
+//$Id: omega_tools.install,v 1.1.2.1 2010/06/08 01:30:29 himerus Exp $
+/**
+ * Cleanup and uninstallation
+ */
+function omega_tools_uninstall() {
+	// delete the setting to render blocks from the omega_tools module
+	variable_del('omega_tools_block_render');
+	// delete all data in the blocks table
+	db_delete('block')
+      ->condition('module', 'omega_tools')
+      ->execute();
+}

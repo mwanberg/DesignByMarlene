@@ -1,0 +1,289 @@
+<?php
+// $Id: omega_tools.module,v 1.1.4.14 2010/10/26 20:35:43 himerus Exp $
+
+/**
+ * Implementation of hook_menu
+ */
+function omega_tools_menu() {
+  foreach (list_themes() as $theme) {
+    $items['admin/appearance/settings/' . $theme->name .'/reset'] = array(
+      'title' => $theme->info['name'],
+      'page callback' => array('_omega_tools_theme_reset'),
+      'page arguments' => array($theme->name),
+      'type' => MENU_CALLBACK,
+      'access callback' => '_system_themes_access',
+      'access arguments' => array($theme),
+      // include system theme tools & functions
+      //'file' => 'system.admin.inc',
+      //'file_path' => drupal_get_path('module', 'system'),
+    );
+  }
+	return $items;
+}
+/**
+ * Implementation of hook_form_alter()
+ * Functionality:
+ *  - system_theme_settings form
+ *    For this form the form_alter organizes the form a bit better, adding fieldsets
+ *    to the default items, making them collapsible, and changing the default size of
+ *    the file uploads for logo and favicon
+ */
+function omega_tools_form_alter(&$form, $form_state, $form_id) {
+  switch($form_id) {
+  	case 'system_theme_settings':
+  		$theme = arg(3);
+  		// if we have an active theme settings page, not the default one
+  		if(isset($theme)) {
+  			// we have a specific theme settings page defined, so we are going to render 
+  			// a custom fieldset and submit button/handler that will allow a user to reset
+  			// the theme settings stored in the system.
+  			                
+        $themes = list_themes();
+        if(isset($themes[$theme]->base_theme)) {
+          $base_themes = system_find_base_themes($themes, $theme, $used_keys = array());	
+          $omega_base = in_array('Omega', $base_themes) ? TRUE : FALSE;
+        }
+        else {
+        	$omega_base = FALSE;
+        }
+        
+        
+        //krumo($themes);
+        
+        if($omega_base || $themes[$theme]->name == 'omega') {
+	        	$form['omega_tools_reset'] = array(
+	          '#type' => 'fieldset',
+	          '#title' => t('Revert Theme Settings'),
+	          '#collapsible' => TRUE,
+	          '#collapsed' => TRUE,
+	          '#description' => '<p><strong>Use this feature with caution!!!</strong></p><p>Using this feature will allow you to revert your theme settings to anything that is in code, and erase the database stored settings in the <em>system</em> table. This is accomplished by removing the record in the table, and then re-enabling the theme. All settings from the .info file will be used rather than any stored changes in the database.</p><p>If you would like to save the theme settings you have now, and put them in code, use the export feature, and paste the settings[] array in your .info file replacing the current values for that array. Then it will be safe to revert without destroying changes made to the theme settings for your subtheme.</p><p>If you have manually edited the settings in the .info file, and are unconcerned with the settings in the database, or the settings in the database are out of date, then it is also safe to revert.</p>',
+	          '#weight' => 50,
+	        );
+	        $form['omega_tools_reset']['theme_reset'] = array(
+	          '#markup' => l('Revert Theme Settings for '. $theme, 'admin/appearance/settings/'. $theme .'/reset'),
+	        );
+        	$form['omega_tools_export'] = array(
+	          '#type' => 'fieldset',
+	          '#title' => t('Export Theme Settings'),
+	          '#collapsible' => TRUE,
+	          '#collapsed' => TRUE,
+	          '#description' => '<p>This feature will dump the settings[] array for your .info file, so you may safely paste this data over the appropriate section in your themes .info, and then use the revert feature without actually using your settings <strong>&lt;/theme-export-awesomesauce&gt;</strong>.</p>',
+	          '#weight' => 49,
+	        );
+	        // gather theme information
+	        $overwritten_settings = variable_get('theme_'. $theme .'_settings', FALSE);
+	        
+	        if($overwritten_settings) {
+	        	
+	        	
+			      $form['omega_tools_export']['theme_settings_status'] = array(
+	            '#markup' => 'Current Theme Settings status: <strong>Overwritten</strong>',
+	          );
+	          $s = $overwritten_settings;
+	          unset(
+	            $s['toggle_logo'], 
+              $s['toggle_name'],
+              $s['toggle_slogan'], 
+              $s['toggle_node_user_picture'],
+              $s['toggle_comment_user_picture'], 
+              $s['toggle_comment_user_verification'],
+              $s['toggle_favicon'], 
+              $s['toggle_main_menu'],
+              $s['toggle_secondary_menu'], 
+              $s['default_logo'],
+              $s['logo_path'], 
+              $s['logo_upload'],
+              $s['default_favicon'], 
+              $s['favicon_path'],
+              $s['favicon_upload'],
+              $s['theme_settings_export_code']
+	          );
+	          $export_vars = '';
+	          foreach($s AS $key => $val) {
+	          	if (isset($val) && !empty($val)) {
+	          		if (is_array($val)) {
+	          			foreach($val AS $k => $v) {
+	          				$export_vars .= "settings[".$key."][$k] = '".$v ."'\n";
+	          			}
+	          		}
+	          		else {
+	          	    $export_vars .= "settings[".$key."] = '".$val ."'\n";
+	          		}
+	          	}
+	          	else {
+	          		$export_vars .= "settings[".$key."] = ''\n";
+	          	}
+	          }
+	          $form['omega_tools_export']['theme_settings_export_code'] = array(
+		          '#type' => 'textarea',
+		          '#title' => t('Export Code'),
+		          '#default_value' => $export_vars,
+		          '#description' => 'You will want to paste this code in the .info file of your subtheme and overwrite the entire settings[] section to properly export this code.',
+		        );
+	        }
+	        else {
+	        	$form['omega_tools_export']['theme_settings_status'] = array(
+	            '#markup' => 'Current Theme Settings status: <strong>In Code (.info)</strong>',
+	          );
+	        }
+        }
+        if(isset($form['omega_admin'])) {
+        	$form['omega_admin']['omega_tools_export'] = $form['omega_tools_export'];
+          unset($form['omega_tools_export']);
+          $form['omega_admin']['omega_tools_reset'] = $form['omega_tools_reset'];
+          unset($form['omega_tools_reset']);
+        }
+  		}
+  		else {
+  			// we are on the default settings page, so we are going to render the option to enable/disable
+  			// the custom blocks created by the omega_tools module
+  			// this is a global option that applies to the current default theme, and not available to 
+  			// each individual theme.
+  			$form['theme_settings']['omega_tools_block_render'] = array(
+          '#type' => 'radios',
+          '#title' => t('Render Omega Tools Default Blocks'),
+  			  '#prefix' => t('<p style="float: right;clear: none; margin-top: 0; margin-left: 10px;"><img src="/'. drupal_get_path('module', 'omega_tools') .'/omega_tools_block_sample.png" /></p>'),
+          '#description' => t('<p>Enabling this feature will create a default block for EACH region defined by the active default theme. This is good for development purposes in advanced themes to test layouts. The blocks appear like the ones sampled in the screenshot to the right.</p>'),
+          '#default_value' => variable_get('omega_tools_block_render', 'on'),
+          '#options' => array('on' => t('Render Omega Tools development blocks'), 'off' => t('Do not render Omega Tools development blocks')),
+  			  '#weight' => -20,
+        );
+        $form['#submit'][] = '_omega_tools_block_render_submit';
+  		}
+	    // add fieldset options to the default system theme form
+	    $form['theme_settings']['#collapsible'] = TRUE;
+	    $form['theme_settings']['#collapsed'] = TRUE;
+	    $form['logo']['logo_upload']['#size'] = 30;
+	    $form['logo']['#collapsible'] = TRUE;
+	    $form['logo']['#collapsed'] = TRUE;
+	    $form['favicon']['favicon_upload']['#size'] = 30;
+	    $form['favicon']['#collapsible'] = TRUE;
+	    $form['favicon']['#collapsed'] = TRUE;
+	    // if we have theme_specific settings provided by a theme, do the same as above
+	    // and also move it up to the top of the page using weights.
+	    if (isset($form['theme_specific'])) {
+		    $form['theme_specific']['#collapsible'] = TRUE;
+		    $form['theme_specific']['#collapsed'] = FALSE;
+		    $form['theme_specific']['#weight'] = -100;
+	    }
+	    // create a parent fieldset for the default stragglers
+	    $form['general_settings'] = array(
+		    '#type' => 'fieldset',
+		    '#title' => t('General Theme Settings'),
+		    '#collapsible' => TRUE,
+		    '#collapsed' => FALSE,
+	      '#weight' => 15,
+		  );
+		  // move the default three fieldsets inside of the parent fieldset to make my life less crappy
+		  $form['general_settings']['theme_settings'] = $form['theme_settings'];
+		  $form['general_settings']['logo'] = $form['logo'];
+		  $form['general_settings']['favicon'] = $form['favicon'];
+		  // remove the old versions so they don't get rendered twice
+		  unset($form['theme_settings']);
+		  unset($form['logo']);
+		  unset($form['favicon']);
+		  // manipulate the custom fieldset we have 
+		  if (isset($form['general_settings'])) {
+		    $form['general_settings']['#type'] = 'vertical_tabs';
+		    $form['general_settings']['#prefix'] = t('<h2 class="omega-config-title">General Theme Settings</h2>');
+		  }
+    break;	
+  }
+}
+function _omega_tools_block_render_submit($form, &$form_state) {
+	//drupal_set_message('<pre>'. print_r($form_state['values'], TRUE) .'</pre>');
+	variable_set('omega_tools_block_render', $form_state['values']['omega_tools_block_render']);
+	drupal_set_message('Omega Tools Block Rendering modified...');
+}
+/**
+ * Implementation of hook_block_info()
+ */
+function omega_tools_block_info() {
+	$blocks = array();
+	if (variable_get('omega_tools_block_render', 'on') == 'on') {
+		// get a list of themes
+	  $theme_key = variable_get('theme_default', 'garland');
+	  $block_regions = system_region_list($theme_key);
+	  foreach($block_regions AS $region_id => $region_desc){
+	  	if ($region_id != "page_top" && $region_id != "page_bottom") {
+		    $blocks['omega_'.$region_id] = array(
+		      'info' => t('Omega - '. ucwords($region_desc)),
+		      'weight' => -50, // put the block at the very top
+		      'status' => 1,
+		      'region' => $region_id,
+		    );
+	  	}
+	  }
+	}
+	return $blocks;
+}
+
+/**
+ * Implemenation of hook_block_view
+ */
+function omega_tools_block_view($delta = '') {
+	if (variable_get('omega_tools_block_render', 'on') == 'on') {
+		// get a list of themes
+	  $theme_key = variable_get('theme_default', 'garland');
+	  $block_regions = system_region_list($theme_key);
+	  $real_delta = str_replace('omega_', '', $delta);
+	  $real_title = ucwords($block_regions[$real_delta]);
+	  $block['subject'] = t($real_title);
+	  $block['content'] = _omega_tools_generate_block_content($real_delta);
+    return $block;	
+	}
+}
+
+/**
+ * Generate block content for the custom generated region placeholder blocks
+ */
+function _omega_tools_generate_block_content($rid){
+  return '<div class="geshifilter"><code class="php">print render($'.$rid.');</code></div>';
+}
+
+/**
+ * Create a form to reset the theme settings in the database
+ */
+function _omega_tools_theme_reset_form($form, &$form_state, $theme) {
+	$form = array();
+  $form['theme_reset'] = array(
+    '#markup' => '<p><strong>WARNING:</strong> You will be fully removing the theme settings stored in the database for this theme ('. $theme .'). This will revert to whatever information is set in the .info file, and erase any customizations made after installation of this theme.</p>',
+  );
+  $form['theme'] = array('#type' => 'hidden', '#value' => $theme);
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Revert Theme Settings'));
+  $form['#submit'][] = '_omega_tools_theme_reset_submit';
+  //krumo($form);
+  
+  return $form;
+}
+
+/**
+ * Callback for generating the reset form for theme settings
+ */
+function _omega_tools_theme_reset($theme = '') {
+  $form = drupal_get_form('_omega_tools_theme_reset_form', $theme);
+	return $form;
+}
+
+/**
+ * Submit handler for theme reset
+ */
+function _omega_tools_theme_reset_submit($form, $form_state) {
+	$theme = $form_state['values']['theme'];
+	// set our redirect
+	$form_state['redirect'] = '/admin/appearance/settings/'. $theme;
+  // remove the stored DB copy of the theme settings that have been modified
+	variable_del('theme_'.$theme.'_settings');
+	// clear the cache in case that will help
+  drupal_flush_all_caches();
+	// rebuild the theme information
+  system_rebuild_theme_data();
+  // clear the cache in case that will help
+	drupal_flush_all_caches();
+	// report to the log
+  watchdog('theme', 'Theme settings for %theme reset to default values.', array('%theme' => $theme));
+  // make a nice message to say it happened, and log to the system
+  drupal_set_message('Theme settings for <strong>'. $form_state['values']['theme'] .'</strong> have been reset...');
+	// go back to the primary settings page for this theme
+	drupal_redirect_form($form_state);
+}
