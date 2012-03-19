@@ -1,2 +1,145 @@
 /* This file will hold styles for the mobile version of your website (mobile first). */
 /* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+
+/*
+ * Element styles
+ *
+ ********************************************/
+
+body {
+  background: #d3e8fa url(../images/header-bg-1.jpg) no-repeat top center;
+}
+
+a,
+a:link,
+a:visited {
+  color: #84ce3c;
+  font-weight: bold;
+}
+
+a:hover,
+a:focus,
+a:active {
+  text-decoration: underline;
+  color: #6cb425;
+}
+
+/*
+ * Site layout sections
+ *
+ ********************************************/
+
+/*
+ * Header
+ */
+
+.logo-img {
+  display: block;
+  float: none;
+  margin: 10px auto 30px auto;
+  text-align: center;
+}
+
+
+/*
+ * Content - general
+ */
+
+article,
+.block {
+  /* Fallback for web browsers that don't support RGBa */
+  background: rgb(255, 255, 255);
+  /* RGBa with 0.6 opacity */
+  background: rgba(255, 255, 255, 0.6);
+  border-top: 2px solid #ee6bac;
+  border-right: 1px solid #fff;
+  border-bottom: 2px solid #ee6bac;
+  border-left: 1px solid #fff;
+  padding: 1em;
+  margin: 0 0 30px 0;
+}
+
+.block article,
+.content .content {
+  background: transparent;
+  border: none;
+  margin: 0;
+  width: auto;
+}
+
+/*
+ * Footer
+ */
+
+/*
+ * Functionality-specific
+ *
+ ********************************************/
+
+/*
+ * Forms
+ */
+
+form input.form-submit {
+  margin: 2px;
+  padding: 8px 10px;
+  /* CSS3 gradient */
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.15, rgb(153,205,105)),
+    color-stop(0.58, rgb(189,235,144))
+);
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(153,205,105) 15%,
+    rgb(189,235,144) 58%
+);
+
+  background-color: #bdeb90;
+  border: 1px solid #93cf59;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  font: bold 100% Georgia, "Times New Roman", Times, serif;
+}
+
+form input.form-submit:hover,
+form input.form-submit.hover,
+form input.form-submit:focus {
+  /* CSS3 gradient */
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.15, rgb(166,212,121)),
+    color-stop(0.58, rgb(202,235,170))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(166,212,121) 15%,
+    rgb(202,235,170) 58%
+);
+  border: 1px solid #a7d679;
+  background-color: #99cd69;
+}
+
+/*
+ * Front page
+ */
+
+#node-page-2 .field-type-image {
+  /* CSS3 stuff */
+  box-shadow: 0px 1px 14px #a1aeb9;
+  -webkit-box-shadow: 0px 1px 14px #a1aeb9;
+  -moz-box-shadow: 0px 1px 14px #a1aeb9;
+  /* end CSS3 stuff */
+  border: 1px solid #000;
+  float: right;
+  margin: 0 0 1em 2em;
+}
+
+.front .block-title {
+  padding: 0 .75em 0 .75em;
+}
