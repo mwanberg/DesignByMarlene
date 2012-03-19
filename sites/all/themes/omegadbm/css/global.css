@@ -24,6 +24,10 @@ a:active {
   color: #6cb425;
 }
 
+input {
+  max-width: 100%;
+}
+
 /*
  * Site layout sections
  *
@@ -41,8 +45,7 @@ a:active {
 }
 
 #logo {
-  display: none;
-  width: 100%;
+  max-width: 100%;
 }
 
 
@@ -143,6 +146,11 @@ background-image: -moz-linear-gradient(
   border: 1px solid #000;
   float: right;
   margin: 0 0 1em 2em;
+  max-width: 50%;
+}
+
+.field-type-image img {
+  max-width: 100%;
 }
 
 .front .block-title {
