@@ -40,6 +40,11 @@ a:active {
   text-align: center;
 }
 
+#logo {
+  display: none;
+  width: 100%;
+}
+
 
 /*
  * Content - general
