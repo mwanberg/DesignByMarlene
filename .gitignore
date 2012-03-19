@@ -1,1 +1,3 @@
 sites/default/*settings*
+sites/default/files/css/*
+sites/default/files/js/*
