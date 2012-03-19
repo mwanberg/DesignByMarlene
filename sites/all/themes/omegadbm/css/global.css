@@ -141,5 +141,15 @@ background-image: -moz-linear-gradient(
 }
 
 .front .block-title {
-  padding: 0 .75em 0 .75em;
+  padding: .5em .75em 0 .75em;
+}
+
+
+/*
+ * Reusable styles
+ *
+ ********************************************/
+
+.bold {
+  font-weight: bold;
 }
