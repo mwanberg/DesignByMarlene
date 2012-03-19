@@ -13,8 +13,3 @@
 .grid12-indent-9 {margin-right: 720px;}
 .grid12-indent-10 {margin-right: 800px;}
 .grid12-indent-11 {margin-right: 880px;}
-
-/* hack to fix node-top & node-bottom being off-grid */
-#content-content .node .first .inner {
-  margin-left: 20px;
-}

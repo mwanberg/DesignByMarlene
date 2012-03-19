@@ -1,12 +1,22 @@
 
 name = Fusion Starter
-description = Fusion Starter sub-theme. Requires <a href="http://drupal.org/project/fusion">Fusion Core</a> and the <a href="http://drupal.org/project/skinr">Skinr</a> module to enable easy point-and-click theming.
+description = A fully featured Fusion starter theme.  Requires <a href="http://drupal.org/project/fusion">Fusion Core</a> and the <a href="http://drupal.org/project/fusion_accelerator">Fusion Accelerator</a> suite to enable easy point-and-click theming.
 base theme = fusion_core
 core = 7.x
 engine = phptemplate
 
 stylesheets[all][] = css/fusion-starter-style.css
 
+; --------------------------------------------------------------------------------
+; This provides support for the Fusion Accelerator suite.  
+; See http://www.drupal.org/project/fusion_accelerator for more information.
+; --------------------------------------------------------------------------------
+fusion[api] = 2
+fusion[directory] = skins
+
+; --------------------------------------------------------------------------------
+; Regions.
+; --------------------------------------------------------------------------------
 regions[sidebar_first] = Sidebar first
 regions[sidebar_second] = Sidebar second
 regions[header_top] = Header top
@@ -24,6 +34,9 @@ regions[help] = Help
 regions[page_top] = Page top
 regions[page_bottom] = Page bottom
 
+; --------------------------------------------------------------------------------
+; Define features supported by this theme.
+; --------------------------------------------------------------------------------
 features[] = logo
 features[] = name
 features[] = slogan
@@ -31,9 +44,12 @@ features[] = node_user_picture
 features[] = comment_user_picture
 features[] = favicon
 
-; Default theme settings (override values inherited from fusion_core)
-; REMOVE THESE ONCE PATCH TO FIX SETTINGS INHERITANCE (#563708) IS IN CORE
-settings[theme_grid] = grid16-960
+; --------------------------------------------------------------------------------
+; Default theme settings.
+; These can be removed from children themes once inheritance is properly fixed
+; in core.  See issue #563708.
+; --------------------------------------------------------------------------------
+settings[theme_grid] = grid12-960
 settings[theme_grid_options][] = grid16-960
 settings[theme_grid_options][] = grid16-fluid
 settings[theme_grid_options][] = grid12-960
@@ -51,11 +67,11 @@ settings[search_info_user] = 1
 settings[search_info_date] = 1
 settings[search_info_comment] = 1
 settings[search_info_upload] = 1
-settings[grid_mask] = 0
+settings[grid_mask] = 1
 
-; Grid layout settings
-; REMOVE THESE ONCE PATCH TO FIX SETTINGS INHERITANCE (#563708) IS IN CORE
-; Nested grid regions without full-width wrappers
+; --------------------------------------------------------------------------------
+; Configure regions that will be alongside other regions.  
+; --------------------------------------------------------------------------------
 settings[grid_nested_regions][] = sidebar_first
 settings[grid_nested_regions][] = sidebar_second
 settings[grid_nested_regions][] = header
@@ -65,7 +81,13 @@ settings[grid_nested_regions][] = postscript_top
 settings[grid_nested_regions][] = node_top
 settings[grid_nested_regions][] = node_bottom
 settings[grid_nested_regions][] = help
-; Nested region width adjustments: adjacent regions to subtract for correct region width
+
+; --------------------------------------------------------------------------------
+; Some regions receive grid unit assignments automatically based on the size
+; of adjacent regions.  For example, the content region will be adjusted to 
+; be the total grid width less the width of both sidebars.  The assignments
+; below are used by the grid calculator to do that simple math.
+; --------------------------------------------------------------------------------
 settings[grid_adjusted_regions][preface_bottom][] = sidebar_first
 settings[grid_adjusted_regions][help][] = sidebar_first
 settings[grid_adjusted_regions][help][] = sidebar_second
@@ -76,20 +98,33 @@ settings[grid_adjusted_regions][node_top][] = sidebar_second
 settings[grid_adjusted_regions][node_bottom][] = sidebar_first
 settings[grid_adjusted_regions][node_bottom][] = sidebar_second
 settings[grid_adjusted_regions][postscript_top][] = sidebar_first
-; Nested group width adjustments: adjacent regions to subtract for correct group width
+
+; --------------------------------------------------------------------------------
+; A group contains one or more regions.  An adjusted group will be assigned 
+; grid units based on the width of other regions.  The layout is defined below to 
+; allow for that calculation.
+; --------------------------------------------------------------------------------
 settings[grid_adjusted_groups][main_group][] = sidebar_first
 settings[grid_adjusted_groups][content_group][] = sidebar_first
 settings[grid_adjusted_groups][content_group][] = sidebar_second
-; Nested region fluid width adjustments: regions outside a parent group to subtract to get correct parent width
+
+; --------------------------------------------------------------------------------
+; Fluid layouts are based on percentages.  A width percentage is always relative
+; to its containing element.  In order for a grid assignment to represent the same
+; rendered width across different levels in the layout heirarchy, it's necessary
+; to make adjustments to percentages.  To do this, Fusion needs to understand
+; how regions relate with one another.
+; --------------------------------------------------------------------------------
+; Regions outside a parent group to subtractto get correct parent width
 settings[grid_adjusted_regions_fluid][sidebar_second][] = sidebar_first
 settings[grid_adjusted_regions_fluid][content][] = sidebar_first
 settings[grid_adjusted_regions_fluid][content][] = sidebar_second
-; Nested group fluid width adjustments: regions inside a parent group to subtract to get remaining width
+; Regions inside a parent group to subtract toget remaining width
 settings[grid_adjusted_groups_fluid][content_group][] = sidebar_second
 
-; Information added by drupal.org packaging script on 2011-02-25
-version = "7.x-1.x-dev"
+; Information added by drupal.org packaging script on 2011-12-20
+version = "7.x-2.0-beta1"
 core = "7.x"
 project = "fusion"
-datestamp = "1298619312"
+datestamp = "1324339864"
 

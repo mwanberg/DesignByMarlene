@@ -30,14 +30,9 @@
 .grid12-indent-11 {margin-left: 880px;}
 
 /* gutters (2 x margin) */
-.block .inner {
+.gutter {
   margin-left: 10px;
   margin-right: 10px;
-}
-
-/* hack to fix node-top & node-bottom being off-grid */
-#content-content .node .first .inner {
-    margin-right: 20px;
 }
 
 body,

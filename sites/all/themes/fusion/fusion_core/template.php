@@ -5,8 +5,10 @@
  */
 function fusion_core_preprocess_maintenance_page(&$vars) {
   if (class_exists('Database', FALSE)) {
-    fusion_core_preprocess_html($vars);  // set html vars (html.tpl.php is in maintenance-page.tpl.php)
-    fusion_core_preprocess_page($vars);  // set page vars
+    // set html vars (html.tpl.php is in maintenance-page.tpl.php)
+    fusion_core_preprocess_html($vars);
+    // set page vars
+    fusion_core_preprocess_page($vars);
   }
 }
 
@@ -17,33 +19,44 @@ function fusion_core_preprocess_maintenance_page(&$vars) {
 function fusion_core_preprocess_html(&$vars) {
   global $theme_key, $user;
 
-  // Add to array of helpful body classes
+  // Add to array of helpful body classes.
   if (isset($vars['node'])) {
-    $vars['classes_array'][] = ($vars['node']) ? 'full-node' : '';                                            // Full node
-    $vars['classes_array'][] = (($vars['node']->type == 'forum') || (arg(0) == 'forum')) ? 'forum' : '';      // Forum page
+    // For full nodes.
+    $vars['classes_array'][] = ($vars['node']) ? 'full-node' : '';
+    // For forums.
+    $vars['classes_array'][] = (($vars['node']->type == 'forum') || (arg(0) == 'forum')) ? 'forum' : '';
   }
   else {
-    $vars['classes_array'][] = (arg(0) == 'forum') ? 'forum' : '';                                            // Forum page
+    // Forums.
+    $vars['classes_array'][] = (arg(0) == 'forum') ? 'forum' : '';
   }
-  if (module_exists('panels') && function_exists('panels_get_current_page_display')) {                        // Panels page
+  if (module_exists('panels') && function_exists('panels_get_current_page_display')) {
     $vars['classes_array'][] = (panels_get_current_page_display()) ? 'panels' : '';
   }
-  $vars['classes_array'][] = theme_get_setting('sidebar_layout');                                             // Sidebar layout
-  $vars['classes_array'][] = (theme_get_setting('theme_font') != 'none') ? theme_get_setting('theme_font') : '';                        // Font family
-  $vars['classes_array'][] = theme_get_setting('theme_font_size');                                            // Font size
-  $vars['classes_array'][] = (user_access('administer blocks', $user) && theme_get_setting('grid_mask')) ? 'grid-mask-enabled' : '';    // Grid mask overlay
+  $vars['classes_array'][] = theme_get_setting('sidebar_layout');
+  $vars['classes_array'][] = (theme_get_setting('theme_font') != 'none') ? theme_get_setting('theme_font') : '';
+  $vars['classes_array'][] = theme_get_setting('theme_font_size');
+  $vars['classes_array'][] = (user_access('administer blocks', $user) && theme_get_setting('grid_mask')) ? 'grid-mask-enabled' : '';
 
   // Add grid classes
   $grid = fusion_core_grid_info();
-  $vars['classes_array'][] = 'grid-type-' . $grid['type'];                                                    // Fixed width or fluid
-  $vars['classes_array'][] = 'grid-width-' . sprintf("%02d", $grid['width']);                                 // Grid width in units
-  $vars['classes_array'][] = ($grid['type'] == 'fluid') ? theme_get_setting('fluid_grid_width') : '';         // Fluid grid width in %
-  $vars['classes_array'] = array_filter($vars['classes_array']);                                              // Remove empty elements
 
-  // Add a unique page id
-  $vars['body_id'] = 'pid-' . strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', drupal_get_path_alias($_GET['q'])));
+  // Fixed or fluid.
+  $vars['classes_array'][] = 'grid-type-' . $grid['type'];
 
-  // Add grid, local, & IE stylesheets, including versions inherited from parent themes
+  // Number of units in the grid (12, 16, etc.)
+  $vars['classes_array'][] = 'grid-width-' . sprintf("%02d", $grid['width']);
+
+  // Fluid grid width in %.
+  $vars['classes_array'][] = ($grid['type'] == 'fluid') ? theme_get_setting('fluid_grid_width') : '';
+
+  // Remove any empty elements in the array.
+  $vars['classes_array'] = array_filter($vars['classes_array']);
+
+  // Add a unique page id.
+  $vars['body_id'] = 'pid-' . drupal_clean_css_identifier(drupal_get_path_alias($_GET['q']));
+
+  // Add grid & local stylesheets, including versions inherited from parent themes
   $themes = fusion_core_theme_paths($theme_key);
   foreach ($themes as $name => $path) {
     $file = theme_get_setting('theme_grid') . '.css';
@@ -52,12 +65,6 @@ function fusion_core_preprocess_html(&$vars) {
     }
     if (file_exists($path . '/css/local.css')) {
       drupal_add_css($path . '/css/local.css', array('basename' => $name . '-local.css', 'group' => CSS_THEME, 'preprocess' => TRUE));
-    }
-    for ($v = 6; $v <= 9; $v++) {
-      $file = 'ie' . $v . '-fixes.css';
-      if (file_exists($path . '/css/' . $file)) {
-        drupal_add_css($path . '/css/' . $file, array('basename' => $name . '-' . $file, 'group' => CSS_THEME, 'browsers' => array('IE' => 'IE ' . $v, '!IE' => FALSE), 'preprocess' => FALSE));
-      }
     }
   }
 }
@@ -112,14 +119,18 @@ function fusion_core_preprocess_region(&$vars) {
     // Set region full-width or nested style
     $vars['region_style'] = $grid['regions'][$vars['region']]['style'];
     $vars['classes_array'][] = ($vars['region_style'] == 'nested') ? $vars['region_style'] : '';
+    $vars['classes_array'][] = $grid['name'] . $grid['regions'][$vars['region']]['width'];
     // Adjust & set region width
     if (!$grid['fixed'] && isset($grid['fluid_adjustments'][$vars['region']])) {
       $vars['fluid_width'] = ' style="width:' . $grid['fluid_adjustments'][$vars['region']] . '%"';
     }
-    else {
-      $vars['classes_array'][] = $grid['name'] . $grid['regions'][$vars['region']]['width'];
-    }
   }
+  // Sidebar regions receive common class, "sidebar".
+  $sidebar_regions = array('sidebar_first', 'sidebar_second');
+  if (in_array($vars['region'], $sidebar_regions)) {
+    $vars['classes_array'][] = 'sidebar';
+  }
+
 }
 
 
@@ -148,9 +159,14 @@ function fusion_core_preprocess_block(&$vars) {
   $vars['classes_array'][] = ($region_count == $total_blocks) ? 'last' : '';
   $vars['classes_array'][] = $vars['block_zebra'];
 
-  // Set a default block width if not already set by Skinr
+  // Set a default block width if not already set by Fusion Apply
   $classes = implode(' ', $vars['classes_array']);
-  if (strpos($classes, $grid['name']) === false) {
+
+  // Special treatment for node_top and node_bottom regions.
+  // They are rendered inside of the $content region, so they need to be adjusted to fit the grid properly.
+  $assign_grid_units = ($vars['block']->region == 'node_top' || $vars['block']->region == 'node_bottom') ? FALSE : TRUE;
+
+  if (strpos($classes, $grid['name']) === FALSE && $assign_grid_units) {
     // Stack blocks vertically in sidebars by setting to full sidebar width
     if ($vars['block']->region == 'sidebar_first') {
       $width = $grid['fixed'] ? $grid['sidebar_first_width'] : $grid['width'];  // Sidebar width or 100% (if fluid)
@@ -177,9 +193,14 @@ function fusion_core_preprocess_node(&$vars) {
   $vars['classes_array'][] = $vars['zebra'];                              // Node is odd or even
   $vars['classes_array'][] = (!$vars['teaser']) ? 'full-node' : '';       // Node is teaser or full-node
 
-  // Add node_top and node_bottom region content
-  $vars['node_top'] = theme('blocks', 'node_top');
-  $vars['node_bottom'] = theme('blocks', 'node_bottom');
+  $node_region_list = array('node_top', 'node_bottom');
+  $node_region_blocks = array();
+  foreach($node_region_list as $region) {
+    if ($list = fusion_core_block_list($region)) {
+      $node_region_blocks[$region] = _block_get_renderable_array($list);
+    }
+    $vars[$region] = isset($node_region_blocks[$region]) ? $node_region_blocks[$region] : array();
+  }
 }
 
 
@@ -247,7 +268,7 @@ function fusion_core_preprocess_search_result(&$vars) {
   $vars['info'] = implode(' - ', $info);
 
   // Provide alternate search result template.
-  $vars['template_files'][] = 'search-result-'. $vars['type'];
+  $vars['template_files'][] = 'search-result-'. $vars['module'];
 }
 
 
@@ -264,9 +285,9 @@ function fusion_core_region__header($vars) {
  * File element override
  * Sets form file input max width
  */
-function fusion_core_file($element) {
-  $element['#size'] = ($element['#size'] > 40) ? 40 : $element['#size'];
-  return theme_file($element);
+function fusion_core_file($vars) {
+  $vars['element']['#size'] = ($vars['element']['#size'] > 40) ? 40 : $vars['element']['#size'];
+  return theme_file($vars);
 }
 
 
@@ -281,13 +302,28 @@ function fusion_core_theme() {
   );
 }
 
+/**
+ * Returns a list of blocks.
+ * Uses Drupal block interface and appends any blocks assigned by the Context module.
+ */
+function fusion_core_block_list($region) {
+  $drupal_list = array();
+  if (module_exists('block')) {
+    $drupal_list = block_list($region);
+  }
+  if (module_exists('context') && $context = context_get_plugin('reaction', 'block')) {
+    $context_list = $context->block_list($region);
+    $drupal_list = array_merge($context_list, $drupal_list);
+  }
+  return $drupal_list;
+}
 
 function fusion_core_grid_block($vars) {
   $output = '';
   if ($vars['content']) {
     $id = $vars['id'];
     $output .= '<div id="' . $id . '" class="' . $id . ' block">' . "\n";
-    $output .= '<div id="' . $id . '-inner" class="' . $id . '-inner inner">' . "\n";
+    $output .= '<div id="' . $id . '-inner" class="' . $id . '-inner gutter">' . "\n";
     $output .= $vars['content'];
     $output .= '</div><!-- /' . $id . '-inner -->' . "\n";
     $output .= '</div><!-- /' . $id . ' -->' . "\n";
@@ -307,10 +343,10 @@ function fusion_core_grid_info() {
     $grid = array();
     $grid['name'] = substr(theme_get_setting('theme_grid'), 0, 7);
     $grid['type'] = substr(theme_get_setting('theme_grid'), 7);
-    $grid['fixed'] = (substr(theme_get_setting('theme_grid'), 7) != 'fluid') ? true : false;
+    $grid['fixed'] = (substr(theme_get_setting('theme_grid'), 7) != 'fluid') ? TRUE : FALSE;
     $grid['width'] = (int)substr($grid['name'], 4, 2);
-    $grid['sidebar_first_width'] = (block_list('sidebar_first')) ? theme_get_setting('sidebar_first_width') : 0;
-    $grid['sidebar_second_width'] = (block_list('sidebar_second')) ? theme_get_setting('sidebar_second_width') : 0;
+    $grid['sidebar_first_width'] = (fusion_core_block_list('sidebar_first')) ? theme_get_setting('sidebar_first_width') : 0;
+    $grid['sidebar_second_width'] = (fusion_core_block_list('sidebar_second')) ? theme_get_setting('sidebar_second_width') : 0;
     $grid['regions'] = array();
     $regions = array_keys(system_region_list($theme_key, REGIONS_VISIBLE));
     $nested_regions = theme_get_setting('grid_nested_regions');
@@ -329,7 +365,7 @@ function fusion_core_grid_info() {
           }
         }
       }
-      $grid['regions'][$region] = array('width' => $region_width, 'style' => $region_style, 'total' => count(block_list($region)), 'count' => 0);
+      $grid['regions'][$region] = array('width' => $region_width, 'style' => $region_style, 'total' => count(fusion_core_block_list($region)), 'count' => 0);
     }
 
     // Adjustments for fluid width regions & groups

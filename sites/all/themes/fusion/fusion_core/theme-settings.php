@@ -28,27 +28,25 @@ function fusion_core_form_system_theme_settings_alter(&$form, $form_state) {
 
   // Create theme settings form widgets using Forms API
 
-  // TNT Fieldset
+  // Fusion theme settings container
   $form['tnt_container'] = array(
     '#type' => 'fieldset',
     '#title' => t('Fusion theme settings'),
     '#description' => t('Use these settings to enhance the appearance and functionality of your Fusion theme.'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
+    '#weight' => -1,
   );
 
   // General Settings
   $form['tnt_container']['general_settings'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('General settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#type' => 'vertical_tabs',
   );
 
   // Grid settings
   $form['tnt_container']['general_settings']['theme_grid_config'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Layout'),
+    '#title' => t('Grid Settings'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
@@ -125,36 +123,23 @@ function fusion_core_form_system_theme_settings_alter(&$form, $form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  // Font family settings
-  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_config_font'] = array(
-    '#type'        => 'fieldset',
-    '#title'       => t('Font family'),
-    '#collapsible' => TRUE,
-    '#collapsed'   => TRUE,
-   );
-  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_config_font']['theme_font'] = array(
-    '#type'          => 'radios',
+  $form['tnt_container']['general_settings']['theme_font_config']['theme_font'] = array(
+    '#type'          => 'select',
     '#title'         => t('Select a new font family'),
     '#default_value' => theme_get_setting('theme_font'),
     '#options'       => array(
       'none' => t('Theme default'),
-      'font-family-sans-serif-sm' => '<span class="font-family-sans-serif-sm">' . t('Sans serif - smaller (Helvetica Neue, Arial, Helvetica, sans-serif)') . '</span>',
-      'font-family-sans-serif-lg' => '<span class="font-family-sans-serif-lg">' . t('Sans serif - larger (Verdana, Geneva, Arial, Helvetica, sans-serif)') . '</span>',
-      'font-family-serif-sm' => '<span class="font-family-serif-sm">' . t('Serif - smaller (Garamond, Perpetua, Nimbus Roman No9 L, Times New Roman, serif)') . '</span>',
-      'font-family-serif-lg' => '<span class="font-family-serif-lg">' . t('Serif - larger (Baskerville, Georgia, Palatino, Palatino Linotype, Book Antiqua, URW Palladio L, serif)') . '</span>',
-      'font-family-myriad' => '<span class="font-family-myriad">' . t('Myriad (Myriad Pro, Myriad, Trebuchet MS, Arial, Helvetica, sans-serif)') . '</span>',
-      'font-family-lucida' => '<span class="font-family-lucida">' . t('Lucida (Lucida Sans, Lucida Grande, Lucida Sans Unicode, Verdana, Geneva, sans-serif)') . '</span>',
+      'font-family-sans-serif-sm' => t('Sans serif - smaller (Helvetica Neue, Arial, Helvetica, sans-serif)'),
+      'font-family-sans-serif-lg' => t('Sans serif - larger (Verdana, Geneva, Arial, Helvetica, sans-serif)'),
+      'font-family-serif-sm' => t('Serif - smaller (Garamond, Perpetua, Nimbus Roman No9 L, Times New Roman, serif)'),
+      'font-family-serif-lg' => t('Serif - larger (Baskerville, Georgia, Palatino, Palatino Linotype, Book Antiqua, URW Palladio L, serif)'),
+      'font-family-myriad' => t('Myriad (Myriad Pro, Myriad, Trebuchet MS, Arial, Helvetica, sans-serif)'),
+      'font-family-lucida' => t('Lucida (Lucida Sans, Lucida Grande, Lucida Sans Unicode, Verdana, Geneva, sans-serif)'),
+      'font-family-tahoma' => t('Tahoma (Tahoma, Arial, Verdana, sans-serif)'),
     ),
   );
-  // Font size settings
-  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_config_size'] = array(
-    '#type'        => 'fieldset',
-    '#title'       => t('Font size'),
-    '#collapsible' => TRUE,
-    '#collapsed'   => TRUE,
-  );
-  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_config_size']['theme_font_size'] = array(
-    '#type'          => 'radios',
+  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_size'] = array(
+    '#type'          => 'select',
     '#title'         => t('Change the base font size'),
     '#description'   => t('Adjusts all text in proportion to your base font size.'),
     '#default_value' => theme_get_setting('theme_font_size'),
@@ -170,7 +155,7 @@ function fusion_core_form_system_theme_settings_alter(&$form, $form_state) {
       'font-size-18' => t('18px'),
     ),
   );
-  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_config_size']['theme_font_size']['#options'][$defaults['theme_font_size']] .= t(' - Theme Default');
+  $form['tnt_container']['general_settings']['theme_font_config']['theme_font_size']['#options'][$defaults['theme_font_size']] .= t(' - Theme Default');
 
   // Navigation
   $form['tnt_container']['general_settings']['navigation'] = array(
@@ -180,13 +165,7 @@ function fusion_core_form_system_theme_settings_alter(&$form, $form_state) {
     '#collapsed' => TRUE,
   );
   // Breadcrumb
-  $form['tnt_container']['general_settings']['navigation']['breadcrumb'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Breadcrumb'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['tnt_container']['general_settings']['navigation']['breadcrumb']['breadcrumb_display'] = array(
+  $form['tnt_container']['general_settings']['navigation']['breadcrumb_display'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display breadcrumb'),
     '#default_value' => theme_get_setting('breadcrumb_display'),
@@ -234,13 +213,13 @@ function fusion_core_form_system_theme_settings_alter(&$form, $form_state) {
   }
 
   // Admin & developer settings
-  $form['tnt_container']['admin_dev_settings'] = array(
+  $form['tnt_container']['general_settings']['developer'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Administrator & developer settings'),
+    '#title' => t('Developer tools'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
- $form['tnt_container']['admin_dev_settings']['grid_mask'] = array(
+  $form['tnt_container']['general_settings']['developer']['grid_mask'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable grid overlay mask for administrators.'),
     '#default_value' => theme_get_setting('grid_mask'),

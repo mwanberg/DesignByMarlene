@@ -1,5 +1,11 @@
 (function ($) {
 
+Drupal.behaviors.fusionHasJS = {
+  attach: function (context, settings) {
+    $('html').removeClass('no-js');
+  }
+};
+
 Drupal.behaviors.fusionEqualheights = {
   attach: function (context, settings) {
     if (jQuery().equalHeights) {
@@ -57,12 +63,12 @@ Drupal.behaviors.fusionGridMask = {
     var grid_width = $('body').attr('class').substring(grid_width_pos, grid_width_pos + 2);
     var grid = '<div id="grid-mask-overlay" class="full-width"><div class="region">';
     for (i = 1; i <= grid_width; i++) {
-      grid += '<div class="block grid' + grid_width + '-1"><div class="inner"></div></div>';
+      grid += '<div class="block grid' + grid_width + '-1"><div class="gutter"></div></div>';
     }
     grid += '</div></div>';
     $('body.grid-mask-enabled').prepend(grid);
     $('#grid-mask-overlay .region').addClass('grid' + grid_width + '-' + grid_width);
-    $('#grid-mask-overlay .block .inner').height($('body').height());
+    $('#grid-mask-overlay .block .gutter').height($('body').height());
   }
 };
 

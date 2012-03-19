@@ -23,7 +23,9 @@ a:active {
 -------------------------------------------------------------- */
 #site-name {
   font-size: 300%;
+  font-weight: normal;
   line-height: 150%;
+  margin: 0;
 }
 
 
@@ -59,7 +61,7 @@ body {
 /* Regions
 
   Classes (.region-name) should always be used instead of IDs (#region-name) so
-  that Skinr styles can override them with a class later
+  that skin styles can override them with a class later
 -------------------------------------------------------------- */
 
 /* All Regions
@@ -131,35 +133,6 @@ body {
 /* Style for hover of dropdown menu items (add background-color here) */
 .main-menu-inner ul.sf-menu li ul li:hover,
 .main-menu-inner ul.sf-menu li ul li.sfHover {
-}
-
-
-/* Secondary menu
--------------------------------------------------------------- */
-/* This menu usually appears in the header as a set of simple text links */
-.secondary-menu {
-}
-
-/* Set general style for menu here -- background, alignment, etc. */
-.secondary-menu-inner ul.links {
-}
-
-/* Add a border-right here for a separator */
-.secondary-menu-inner ul.links li {
-}
-
-/* Add border-right: 0; here to remove right separator on last menu item */
-.secondary-menu-inner ul.links li.last {
-}
-
-/* Styles for links */
-.secondary-menu-inner ul.links li a:link,
-.secondary-menu-inner ul.links li a:visited {
-}
-
-.secondary-menu-inner ul.links li a:hover,
-.secondary-menu-inner ul.links li a:focus,
-.secondary-menu-inner ul.links li a.active {
 }
 
 
@@ -453,10 +426,10 @@ div.comment ul.links a {
 }
 
 /* Alternating styles for even/odd comments */
-.comments div.odd {
+.comments .comment.odd {
 }
 
-.comments div.even {
+.comments .comment.even {
 }
 
 /* A special highlight style for a comment by the author of the node */
@@ -497,23 +470,4 @@ div.poll div.bar div.foreground {
 
 /* Styles for sub-headings on user profiles */
 .profile dt {
-}
-
-
-
-/* Skinr
-/-------------------------------------------------------------- */
-
-/* This is a sample Skinr style to get you started. See fusion_starter.info */
-.fusion-example-stylename .inner {
-  /* When setting the background color, also set foreground colors for text and
-    links, even if it's similar to the default body style. Remember, this block
-    style may be used in regions with other foreground colors, thus making text
-    invisible if left unspecified */
-  background-color: #ccc;
-  color: #000;
-  /* All padding and borders should go on the .inner div, so as not to break
-    the widths of the grid */
-  border: 3px solid #000;
-  padding: 10px;
 }

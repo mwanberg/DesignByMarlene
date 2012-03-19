@@ -23,7 +23,9 @@ a:active {
 -------------------------------------------------------------- */
 #site-name {
   font-size: 300%;
+  font-weight: normal;
   line-height: 150%;
+  margin: 0;
 }
 
 .footer-message {
@@ -63,7 +65,7 @@ body {
 /* Regions
 
   Classes (.region-name) should always be used instead of IDs (#region-name) so
-  that Skinr styles can override them with a class later
+  that skin styles can override them with a class later
 -------------------------------------------------------------- */
 
 /* All Regions
@@ -152,51 +154,6 @@ body {
 }
 
 
-/* Secondary menu
--------------------------------------------------------------- */
-/* This menu usually appears in the header as a set of simple text links */
-.secondary-menu {
-}
-
-/* Set general style for menu here -- background, alignment, etc. */
-.secondary-menu-inner ul.links {
-}
-
-/* Add a border-right here for a separator */
-.secondary-menu-inner ul.links li {
-}
-
-/* Add border-right: 0; here to remove right separator on last menu item */
-.secondary-menu-inner ul.links li.last {
-}
-
-/* Styles for links */
-.secondary-menu-inner ul.links li a:link,
-.secondary-menu-inner ul.links li a:visited {
-  padding: 3px;
-}
-
-.secondary-menu-inner ul.links li a:hover,
-.secondary-menu-inner ul.links li a:focus,
-.secondary-menu-inner ul.links li a.active {
-}
-
-
-/* Header - Search
--------------------------------------------------------------- */
-.search-box {
-}
-
-.search-box-inner {
-}
-
-.search-box-inner form#search-theme-form {
-}
-
-.search-box-inner input#edit-search-theme-form-header {
-}
-
-
 /*  Preface Regions
 -------------------------------------------------------------- */
 /* The Preface Top region sits between the header and the Main Area
@@ -236,16 +193,10 @@ body {
 
 /* Content Regions
 -------------------------------------------------------------- */
-.content-top {
-}
-
 .content {
 }
 
 .content-inner {
-}
-
-.content-bottom {
 }
 
 /* This region only appears on full node pages. It's useful for ads or other
@@ -277,18 +228,6 @@ body {
 }
 
 .footer-inner {
-}
-
-.footer-message-wrapper {
-}
-
-.footer-message {
-}
-
-.footer-message-inner {
-}
-
-.footer-message-text {
 }
 
 
@@ -625,6 +564,7 @@ tr.drag-previous td {
 /-------------------------------------------------------------- */
 /* Style for each individual comment */
 div.comment {
+  padding: 0px;
 }
 
 /* Subject (title) of each comment */
@@ -637,11 +577,11 @@ div.comment ul.links a {
 }
 
 /* Alternating styles for even/odd comments */
-.comments div.odd {
+.comments .comment.odd {
   background-color: #fff;
 }
 
-.comments div.even {
+.comments .comment.even {
   background-color: #eee;
 }
 
@@ -693,125 +633,3 @@ div.poll div.bar div.foreground {
   background-color: #ccc;
 }
 
-
-/* Ubercart - catalog
-/-------------------------------------------------------------- */
-
-/* Horizontal list of subcategories in catalog */
-ul.uc-categories {
-}
-
-.uc-categories li a {
-  font-weight: bold;
-  padding: 0 5px 0 3px;
-}
-
-/* Product and category names */
-.catalog-grid-title a:link,
-.catalog-grid-title a:visited,
-.category a:link,
-.category a:visited {
-}
-
-.catalog-grid-title a:hover,
-.catalog-grid-title a:focus,
-.category a:hover,
-.category a:focus {
-}
-
-/* Sell price in Ubercart catalog */
-.category-grid-products .catalog-grid-sell-price {
-}
-
-/* Ubercart - add to cart buttons
-/-------------------------------------------------------------- */
-
-/* Add to cart buttons */
-input.node-add-to-cart,
-input.list-add-to-cart {
-}
-
-/* Hover and focus styles, with .hover class added for IE6 support */
-input.node-add-to-cart:hover,
-input.node-add-to-cart.hover,
-input.node-add-to-cart:focus,
-input.list-add-to-cart:hover,
-input.list-add-to-cart.hover,
-input.list-add-to-cart:focus {
-}
-
-/* Ubercart - product nodes
-/-------------------------------------------------------------- */
-
-#field-group {
-}
-
-#price-group {
-}
-
-/* Product images */
-.product-image a img {
-}
-
-.product-image a:hover img,
-.product-image a:focus img {
-}
-
-/* Display price on full product nodes */
-.full-node .product-group .uc-price-display {
-}
-
-/* Product attributes on full nodes */
-.full-node .product-group .attributes {
-}
-
-/* Ubercart - general / checkout
-/-------------------------------------------------------------- */
-
-/* For optional "Powered by Ubercart" footer message */
-#store-footer {
-}
-
-#store-footer a:link,
-#store-footer a:visited {
-}
-
-/* View cart/Checkout links in Ubercart cart block */
-.cart-block-summary-links ul.links li a {
-}
-
-.cart-block-summary-links ul.links li.cart-block-checkout a:link,
-.cart-block-summary-links ul.links li.cart-block-checkout a:visited {
-}
-
-/* Key checkout process buttons: Checkout, Continue, and Submit Order */
-#uc-cart-view-form #edit-checkout,
-#uc-cart-checkout-form #edit-continue,
-#uc-cart-checkout-review-form #edit-submit {
-}
-
-/* Table on final order review page */
-.order-review-table {
-}
-
-#cart-form-products table th {
-  border-bottom: 3px solid #dec2c3;
-}
-
-
-/* Skinr
-/-------------------------------------------------------------- */
-
-/* This is a sample Skinr style to get you started. See fusion_starter.info */
-.fusion-example-stylename .inner {
-  /* When setting the background color, also set foreground colors for text and
-    links, even if it's similar to the default body style. Remember, this block
-    style may be used in regions with other foreground colors, thus making text
-    invisible if left unspecified */
-  background-color: #ccc;
-  color: #000;
-  /* All padding and borders should go on the .inner div, so as not to break
-    the widths of the grid */
-  border: 3px solid #000;
-  padding: 10px;
-}

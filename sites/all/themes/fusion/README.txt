@@ -24,8 +24,8 @@ INSTALLATION
     Note: you will need to create the "themes" folder under "sites/all/"
     or "sites/default/".
 
- 3. Install the Skinr module: http://drupal.org/project/skinr
-    Skinr makes Fusion even more powerful, giving you control over Fusion's 
+ 3. Install the Fusion Accelerator module: http://drupal.org/project/fusion_accelerator
+    Fusion Accelerator makes Fusion even more powerful, giving you control over Fusion's 
     layout and style options in Drupal's interface. Download and install 
     this module like usual to get the most out of Fusion.
 

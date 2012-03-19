@@ -41,7 +41,7 @@
  */
 ?>
 <div id="block-<?php print $block->module . '-' . $block->delta; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?>>
-  <div class="inner clearfix">
+  <div class="gutter inner clearfix">
     <?php print render($title_prefix); ?>
     <?php if ($block->subject): ?>
     <h2 class="title block-title"<?php print $title_attributes; ?>><?php print $block->subject ?></h2>

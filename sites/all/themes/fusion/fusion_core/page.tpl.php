@@ -11,8 +11,8 @@
           <div id="header-group-inner" class="header-group-inner inner clearfix">
 
             <?php if ($logo || $site_name || $site_slogan): ?>
-            <div id="header-site-info" class="header-site-info block">
-              <div id="header-site-info-inner" class="header-site-info-inner inner">
+            <div id="header-site-info" class="header-site-info">
+              <div id="header-site-info-inner" class="header-site-info-inner gutter">
                 <?php if ($logo): ?>
                 <div id="logo">
                   <a href="<?php print check_url($front_page); ?>" title="<?php print t('Home'); ?>"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
@@ -21,7 +21,11 @@
                 <?php if ($site_name || $site_slogan): ?>
                 <div id="site-name-wrapper" class="clearfix">
                   <?php if ($site_name): ?>
-                  <span id="site-name"><a href="<?php print check_url($front_page); ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a></span>
+                    <?php if ($title): ?>
+                    <div id="site-name"><a href="<?php print check_url($front_page); ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></div>
+                    <?php else: /* Use h1 when the content title is empty */ ?>
+                    <h1 id="site-name"><a href="<?php print check_url($front_page); ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></h1>
+                    <?php endif; ?>
                   <?php endif; ?>
                   <?php if ($site_slogan): ?>
                   <span id="slogan"><?php print $site_slogan; ?></span>
@@ -61,32 +65,25 @@
 
                         <div id="content-region" class="content-region region nested">
                           <div id="content-region-inner" class="content-region-inner inner">
-                            <a name="main-content-area" id="main-content-area"></a>
+                            <a id="main-content-area"></a>
                             <?php print theme('grid_block', array('content' => render($tabs), 'id' => 'content-tabs')); ?>
-                            <?php print theme('grid_block', array('content' => render($page['help']), 'id' => 'content-help')); ?>
-                            <div id="content-inner" class="content-inner block">
-                              <div id="content-inner-inner" class="content-inner-inner inner">
-                                <?php print render($title_prefix); ?>
-                                <?php if ($title): ?>
-                                <h1 class="title"><?php print $title; ?></h1>
-                                <?php endif; ?>
-                                <?php print render($title_suffix); ?>
-                                <?php if ($action_links): ?>
-                                <ul class="action-links"><?php print render($action_links); ?></ul>
-                                <?php endif; ?>
-                                <?php if ($page['content']): ?>
-                                <div id="content-content" class="content-content">
-                                  <?php print render($page['content']); ?>
-                                </div><!-- /content-content -->
-                                <?php endif; ?>
-                              </div><!-- /content-inner-inner -->
-                            </div><!-- /content-inner -->
+                            <?php print render($page['help']); ?>
+                            <?php print render($title_prefix); ?>
+                            <?php if ($title): ?>
+                            <h1 class="title gutter"><?php print $title; ?></h1>
+                            <?php endif; ?>
+                            <?php print render($title_suffix); ?>
+                            <?php if ($action_links): ?>
+                            <ul class="action-links"><?php print render($action_links); ?></ul>
+                            <?php endif; ?>
+                            <?php if ($page['content']): ?>
+                              <?php print render($page['content']); ?>
+                            <?php endif; ?>
                           </div><!-- /content-region-inner -->
                         </div><!-- /content-region -->
 
                       </div><!-- /content-group-inner -->
                     </div><!-- /content-group -->
-
                     <?php print render($page['sidebar_second']); ?>
                   </div><!-- /main-content-inner -->
                 </div><!-- /main-content -->

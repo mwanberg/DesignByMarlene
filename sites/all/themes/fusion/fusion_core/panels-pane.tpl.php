@@ -18,12 +18,12 @@
  */
 
 /**
- * $skinr variable, <div class="inner">, and 'content' in
+ * <div class="inner"> and $content in
  * <div class="pane-content content"> added for Fusion theming
  */
 
 ?>
-<div class="<?php print $classes; ?> <?php print $skinr; ?>" <?php print $id; ?>>
+<div class="<?php print $classes; ?>" <?php print $id; ?>>
   <div class="inner">
     <?php if ($admin_links): ?>
       <div class="admin-links panel-hide">
@@ -42,7 +42,7 @@
     <?php endif; ?>
 
     <div class="pane-content content">
-      <?php print $content; ?>
+      <?php print render($content); ?>
     </div>
 
     <?php if ($links): ?>

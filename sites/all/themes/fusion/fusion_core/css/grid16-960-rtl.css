@@ -17,8 +17,3 @@
 .grid16-indent-13 {margin-right: 780px;}
 .grid16-indent-14 {margin-right: 840px;}
 .grid16-indent-15 {margin-right: 900px;}
-
-/* hack to fix node-top & node-bottom being off-grid */
-#content-content .node .first .inner {
-  margin-left: 20px;
-}
